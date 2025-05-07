@@ -22,7 +22,7 @@ namespace AbstractFactoryPattern
 
         public FakeDatabaseService()
         {
-            Console.WriteLine($"[{_databaseType}][FakeDatabaseService]");
+            Console.WriteLine($"[{_databaseType}][Constructor] **********************");
         }
 
         public string GetDatabaseType()
@@ -50,6 +50,10 @@ namespace AbstractFactoryPattern
         {
             Console.WriteLine($"[{_databaseType}][Close] **********************");
 
+        }
+        public Boolean IsOpen()
+        {
+            return true;
         }
     }
 }

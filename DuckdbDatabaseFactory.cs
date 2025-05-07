@@ -26,7 +26,7 @@ namespace AbstractFactoryPattern
 
         public DuckdbDataBaseService()
         {
-            Console.WriteLine($"[{_databaseType}][DuckdbDataBaseService] **********************");
+            Console.WriteLine($"[{_databaseType}][Constructor] **********************");
         }
 
         public string GetDatabaseType()
@@ -68,12 +68,59 @@ namespace AbstractFactoryPattern
             DuckDBDataReader reader = cmd.ExecuteReader();
 
             Console.WriteLine($"[{_databaseType}][ExecuteReader] {sql} --> {reader.FieldCount} {reader.HasRows}");
-        }
+            Console.WriteLine();
 
+            for (var index = 0; index < reader.FieldCount; index++)
+            {
+                var column = reader.GetName(index);
+                Console.Write($"{index}:{column} ");
+            }
+            Console.WriteLine();
+
+            while (reader.Read())
+            {
+                for (int ordinal = 0; ordinal < reader.FieldCount; ordinal++)
+                {
+                    if (reader.IsDBNull(ordinal))
+                    {
+                        Console.Write($"{ordinal}:type NULL:value NULL");
+                        continue;
+                    }
+                    switch (reader.GetFieldType(ordinal).Name)
+                    {
+                        case "Int32":
+                            Console.Write($"[{ordinal}:{reader.GetFieldType(ordinal).Name}:{reader.GetFieldValue<Int32>(ordinal)}] ");
+                            break;
+                        case "Int64":
+                            Console.Write($"[{ordinal}:{reader.GetFieldType(ordinal).Name}:{reader.GetFieldValue<Int64>(ordinal)}] ");
+                            break;
+                        case "Double":
+                            Console.Write($"[{ordinal}:{reader.GetFieldType(ordinal).Name}:{reader.GetFieldValue<Double>(ordinal)}] ");
+                            break;
+                        case "String":
+                            Console.Write($"[{ordinal}:{reader.GetFieldType(ordinal).Name}:{reader.GetFieldValue<String>(ordinal)}] ");
+                            break;
+                        default:
+                            Console.Write($"[{ordinal}:unknown type {reader.GetFieldType(ordinal).Name}] ");
+                            break;
+
+                    }
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine();
+        }
         public void Close()
         {
-            Console.WriteLine($"[{_databaseType}][Close] **********************");
-            conn.Close();
+            if ( IsOpen() )
+            {
+                Console.WriteLine($"[{_databaseType}][Close] **********************");
+                conn.Close();
+            }
+        }
+        public Boolean IsOpen()
+        {
+            return (conn.State == System.Data.ConnectionState.Open);
         }
     }
 }

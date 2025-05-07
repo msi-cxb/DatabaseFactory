@@ -17,6 +17,7 @@ namespace AbstractFactoryPattern
             public int ExecuteScalar(string sql);
             public void ExecuteReader(string sql);
             public void Close();
+            public Boolean IsOpen();
         }
     }
     public interface IDatabaseFactory

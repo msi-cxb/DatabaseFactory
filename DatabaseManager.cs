@@ -7,9 +7,15 @@ using static AbstractFactoryPattern.DatabaseInterface;
 
 namespace AbstractFactoryPattern
 {
-    public class DatabaseManager
+    public class DatabaseManager : IDisposable
     {
         private readonly IDatabaseService _database;
+
+        public void Dispose()
+        {
+            Console.WriteLine($"[DatabaseManager] ***** Dispose *****");
+            _database.Close();
+        }
 
         public DatabaseManager(IDatabaseFactory factory)
         {
@@ -42,6 +48,10 @@ namespace AbstractFactoryPattern
         public void Close()
         {
             _database.Close();
+        }
+        public Boolean IsOpen()
+        {
+            return _database.IsOpen();
         }
 
     }
