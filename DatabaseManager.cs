@@ -26,6 +26,7 @@ namespace AbstractFactoryPattern
         {
             return _database.GetDatabaseType();
         }
+        
         public void GetDatabaseConnection(string filename)
         {
             _database.GetConnection(filename);
@@ -45,14 +46,15 @@ namespace AbstractFactoryPattern
         {
             _database.ExecuteReader(sql);
         }
+        
         public void Close()
         {
             _database.Close();
         }
+        
         public Boolean IsOpen()
         {
             return _database.IsOpen();
         }
-
     }
 }

@@ -29,28 +29,34 @@ namespace AbstractFactoryPattern
         {
             return _databaseType;
         }
+        
         public void GetConnection(string dataSource)
         {
             Console.WriteLine($"[{_databaseType}][GetConnection] {dataSource}");
         }
+        
         public void ExecuteNonQuery(string sql)
         {
             Console.WriteLine($"[{_databaseType}][ExecuteNonQuery] {sql}");
         }
+        
         public int ExecuteScalar(string sql)
         {
             Console.WriteLine($"[{_databaseType}][ExecuteScalar] {sql}");
             return 0;
         }
+        
         public void ExecuteReader(string sql)
         {
             Console.WriteLine($"[{_databaseType}][ExecuteReader] {sql}");
         }
+        
         public void Close()
         {
             Console.WriteLine($"[{_databaseType}][Close] **********************");
 
         }
+        
         public Boolean IsOpen()
         {
             return true;

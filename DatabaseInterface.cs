@@ -20,6 +20,7 @@ namespace AbstractFactoryPattern
             public Boolean IsOpen();
         }
     }
+
     public interface IDatabaseFactory
     {
         public IDatabaseService CreateDatabaseService();

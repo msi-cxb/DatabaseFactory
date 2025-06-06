@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
+using System.Data.Odbc;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,21 +8,21 @@ using static AbstractFactoryPattern.DatabaseInterface;
 
 namespace AbstractFactoryPattern
 {
-    public class SqliteDatabaseFactory : IDatabaseFactory
+    public class SqliteODBCDatabaseFactory : IDatabaseFactory
     {
         public IDatabaseService CreateDatabaseService()
         {
-            return new SqliteDataBaseService();
+            return new SqliteODBCDataBaseService();
         }
     }
 
-    public class SqliteDataBaseService : IDatabaseService
+    public class SqliteODBCDataBaseService : IDatabaseService
     {
-        private string _databaseType = "SQLITE";
+        private string _databaseType = "SQLITEODBC";
         private string _dataSource = string.Empty;
-        private SQLiteConnection? conn = null;
+        private OdbcConnection? conn = null;
 
-        public SqliteDataBaseService()
+        public SqliteODBCDataBaseService()
         {
             Console.WriteLine($"[{_databaseType}][Constructor] **********************");
         }
@@ -35,7 +35,7 @@ namespace AbstractFactoryPattern
         public void GetConnection(string dataSource)
         {
             // todo check the path of dataSource
-            conn = new SQLiteConnection($"Data Source={dataSource};Version=3;");
+            conn = new OdbcConnection($"driver=SQLite3 ODBC Driver;NoWCHAR=1;database={dataSource};");
             try
             {
                 conn.Open();
@@ -50,7 +50,7 @@ namespace AbstractFactoryPattern
 
         public void ExecuteNonQuery(string sql)
         {
-            using SQLiteCommand cmd = conn.CreateCommand();
+            using OdbcCommand cmd = conn.CreateCommand();
             cmd.CommandText = sql;
             var rtn = cmd.ExecuteNonQuery();
 
@@ -59,7 +59,7 @@ namespace AbstractFactoryPattern
 
         public Int32 ExecuteScalar(string sql)
         {
-            using SQLiteCommand cmd = conn.CreateCommand();
+            using OdbcCommand cmd = conn.CreateCommand();
             cmd.CommandText = sql;
             var rtn = cmd.ExecuteScalar();
 
@@ -70,9 +70,9 @@ namespace AbstractFactoryPattern
 
         public void ExecuteReader(string sql)
         {
-            using SQLiteCommand cmd = conn.CreateCommand();
+            using OdbcCommand cmd = conn.CreateCommand();
             cmd.CommandText = sql;
-            SQLiteDataReader reader = cmd.ExecuteReader();
+            OdbcDataReader reader = cmd.ExecuteReader();
 
             Console.WriteLine($"[{_databaseType}][ExecuteReader] {sql} --> {reader.FieldCount} {reader.HasRows}");
             Console.WriteLine();

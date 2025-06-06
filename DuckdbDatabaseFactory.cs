@@ -110,6 +110,7 @@ namespace AbstractFactoryPattern
             }
             Console.WriteLine();
         }
+        
         public void Close()
         {
             if ( IsOpen() )
@@ -118,6 +119,7 @@ namespace AbstractFactoryPattern
                 conn.Close();
             }
         }
+        
         public Boolean IsOpen()
         {
             return (conn.State == System.Data.ConnectionState.Open);

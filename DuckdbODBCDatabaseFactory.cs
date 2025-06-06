@@ -1,28 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.Odbc;
 using static AbstractFactoryPattern.DatabaseInterface;
 
 namespace AbstractFactoryPattern
 {
-    public class SqliteDatabaseFactory : IDatabaseFactory
+    public class DuckdbODBCDatabaseFactory : IDatabaseFactory
     {
         public IDatabaseService CreateDatabaseService()
         {
-            return new SqliteDataBaseService();
+            return new DuckdbODBCDataBaseService();
         }
     }
 
-    public class SqliteDataBaseService : IDatabaseService
+    public class DuckdbODBCDataBaseService : IDatabaseService
     {
-        private string _databaseType = "SQLITE";
+        private string _databaseType = "DUCKDBODBC";
         private string _dataSource = string.Empty;
-        private SQLiteConnection? conn = null;
+        private OdbcConnection? conn = null;
 
-        public SqliteDataBaseService()
+        public DuckdbODBCDataBaseService()
         {
             Console.WriteLine($"[{_databaseType}][Constructor] **********************");
         }
@@ -34,23 +34,14 @@ namespace AbstractFactoryPattern
 
         public void GetConnection(string dataSource)
         {
-            // todo check the path of dataSource
-            conn = new SQLiteConnection($"Data Source={dataSource};Version=3;");
-            try
-            {
-                conn.Open();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[{_databaseType}][GetConnection] {ex.Message}");
-            }
-
+            conn = new OdbcConnection($"Driver=DuckDB Driver;Database={dataSource};allow_unsigned_extensions=true;");
+            conn.Open();
             Console.WriteLine($"[{_databaseType}][GetConnection] {dataSource}");
         }
 
         public void ExecuteNonQuery(string sql)
         {
-            using SQLiteCommand cmd = conn.CreateCommand();
+            using OdbcCommand cmd = conn.CreateCommand();
             cmd.CommandText = sql;
             var rtn = cmd.ExecuteNonQuery();
 
@@ -59,7 +50,7 @@ namespace AbstractFactoryPattern
 
         public Int32 ExecuteScalar(string sql)
         {
-            using SQLiteCommand cmd = conn.CreateCommand();
+            using OdbcCommand cmd = conn.CreateCommand();
             cmd.CommandText = sql;
             var rtn = cmd.ExecuteScalar();
 
@@ -70,9 +61,9 @@ namespace AbstractFactoryPattern
 
         public void ExecuteReader(string sql)
         {
-            using SQLiteCommand cmd = conn.CreateCommand();
+            using OdbcCommand cmd = conn.CreateCommand();
             cmd.CommandText = sql;
-            SQLiteDataReader reader = cmd.ExecuteReader();
+            OdbcDataReader reader = cmd.ExecuteReader();
 
             Console.WriteLine($"[{_databaseType}][ExecuteReader] {sql} --> {reader.FieldCount} {reader.HasRows}");
             Console.WriteLine();
@@ -120,18 +111,16 @@ namespace AbstractFactoryPattern
         
         public void Close()
         {
-            if (IsOpen())
+            if ( IsOpen() )
             {
                 Console.WriteLine($"[{_databaseType}][Close] **********************");
                 conn.Close();
             }
         }
-
+        
         public Boolean IsOpen()
         {
-            return (conn.State == System.Data.ConnectionState.Open); 
+            return (conn.State == System.Data.ConnectionState.Open);
         }
-
-
     }
 }
