@@ -35,6 +35,9 @@ namespace AbstractFactoryPattern
 
         public void GetConnection(string connString)
         {
+            // a new connection is required for each query so we store
+            // the connection string and open new connection in each
+            // ExecuteXXX() method below
             _connString = connString;
             Console.WriteLine($"[{_databaseType}][GetConnection] {_connString}");
         }
