@@ -12,7 +12,7 @@ namespace AbstractFactoryPattern
         public interface IDatabaseService
         {
             public string GetDatabaseType();
-            public void GetConnection(string filename);
+            public void GetConnection(string dataSource);
             public void ExecuteNonQuery(string sql);
             public int ExecuteScalar(string sql);
             public void ExecuteReader(string sql);

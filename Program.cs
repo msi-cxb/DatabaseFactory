@@ -1,5 +1,6 @@
 ﻿using AbstractFactoryPattern;
 using System.Collections;
+using System.Data.Entity;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 class Program
@@ -10,9 +11,10 @@ class Program
 
         factoryArrayList.Add(new TestDatabaseFactory());
         factoryArrayList.Add(new SqliteDatabaseFactory());
-        factoryArrayList.Add(new DuckdbDatabaseFactory());
+        factoryArrayList.Add(new PostgreSQLDatabaseFactory());
         factoryArrayList.Add(new SqliteODBCDatabaseFactory());
         factoryArrayList.Add(new DuckdbODBCDatabaseFactory());
+        factoryArrayList.Add(new PostgreSQLDatabaseFactory());
 
         foreach (IDatabaseFactory f in factoryArrayList) 
         {
@@ -25,8 +27,18 @@ class Program
             Console.WriteLine($"******************************\nGetDatabaseType: {type}");
 
             // create/open database file using DatabaseType as file name
-            db.GetDatabaseConnection($"__{type}.db");
-
+            switch( type )
+            {
+                case "PostgreSQL":
+                    // this needs to be a valid PostgreSQL connection string
+                    db.GetDatabaseConnection($"Host=charlies-MacBook-Pro.local;Username=postgres;Password=postgres;Database=postgres");
+                    break;
+                default:
+                    // for file based databases, this is just the name of the database file
+                    db.GetDatabaseConnection($"__{type}.db");
+                    break;
+            }
+            
             // execute some sql, making sure to use SQL that works in both SQLite3 and DuckDB
 
             // this uses SQLite3 types but should be compatible with DuckDB
@@ -47,3 +59,23 @@ class Program
         }
     }
 }
+
+//var connString = "Host=myserver;Username=mylogin;Password=mypass;Database=mydatabase";
+
+//await using var conn = new NpgsqlConnection(connString);
+//await conn.OpenAsync();
+
+//// Insert some data
+//await using (var cmd = new NpgsqlCommand("INSERT INTO data (some_field) VALUES (@p)", conn))
+//{
+//    cmd.Parameters.AddWithValue("p", "Hello world");
+//    await cmd.ExecuteNonQueryAsync();
+//}
+
+//// Retrieve all rows
+//await using (var cmd = new NpgsqlCommand("SELECT some_field FROM data", conn))
+//await using (var reader = await cmd.ExecuteReaderAsync())
+//{
+//    while (await reader.ReadAsync())
+//        Console.WriteLine(reader.GetString(0));
+//}
