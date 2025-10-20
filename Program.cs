@@ -1,7 +1,5 @@
 ﻿using AbstractFactoryPattern;
 using System.Collections;
-using System.Data.Entity;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 class Program
 {
